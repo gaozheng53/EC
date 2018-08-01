@@ -19,7 +19,7 @@
     id, username, password, email, phone, question, answer, role, create_time, update_time
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
-    select 
+    select
     <include refid="Base_Column_List" />
     from mmall_user
     where id = #{id,jdbcType=INTEGER}
@@ -152,7 +152,8 @@
   </update>
 
   <select id="checkUsername" resultType="int" parameterType="string">
-    SELECT count(1) FROM mmall_user
+    SELECT count(1)
+    FROM mmall_user
     WHERE username = #{username}
   </select>
 
@@ -179,5 +180,22 @@
     SELECT COUNT(1)
     from mmall_user
     where username = #{username} and question = #{question} and answer = #{answer}
+  </select>
+
+  <update id="updatePasswordByUsername" parameterType="map">
+  UPDATE mmall_user
+  SET password = #{newPassword},update_time = now()
+  where username = #{username}
+  </update>
+
+<select id="checkPassword" resultType="int" parameterType="map">
+SELECT count(1)
+from mmall_user
+where id = #{userId} and password = #{password}
+</select>
+
+  <select id="checkOthersEmailByUserId" resultType="int" parameterType="map">
+  SELECT count(1) FROM mmall_user
+    WHERE email = #{email} and id != #{userId}
   </select>
 </mapper>

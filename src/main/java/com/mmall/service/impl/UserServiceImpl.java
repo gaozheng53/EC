@@ -20,9 +20,9 @@ public class UserServiceImpl implements IUserService{
 
     @Override
     public ServerResponse<User> login(String username, String password) {
-        int countUser = userMapper.checkUsername(username);
+//        System.out.println("username = " + username + " password = "+ password);
+        int countUser = userMapper.checkUsername(username);  
         if( countUser == 0){return ServerResponse.createByErrorMessage("用户名不存在");}
-
 
         String md5Password = MD5Util.MD5EncodeUtf8(password);
         User user = userMapper.selectLogin(username,md5Password);
@@ -94,10 +94,89 @@ public class UserServiceImpl implements IUserService{
         if (count > 0){
             // 校验成功
             String forgetToken = UUID.randomUUID().toString();  //生成一个几乎可以unique的字符串
-            TokenCache.setKey("token_"+username,forgetToken); //放入缓存
+            TokenCache.setKey(TokenCache.TOKEN_PREFIX+username,forgetToken); //放入缓存
             return ServerResponse.createBySuccess(forgetToken);
         }
         return ServerResponse.createByErrorMessage("问题的答案错误");
+    }
+
+    public ServerResponse<String> forgetResetPassword(String username, String newPassword, String token){
+        if(StringUtils.isBlank(token)){
+            return ServerResponse.createByErrorMessage("参数错误，token需要传递");
+        }
+        ServerResponse validResponse = this.checkValid(username,Const.USERNAME);
+        if(validResponse.isSuccess()){
+            // 用户不存在
+            return ServerResponse.createByErrorMessage("用户不存在");
+        }
+        String getToken = TokenCache.getKey(TokenCache.TOKEN_PREFIX+username);
+        if(StringUtils.isBlank(getToken)){
+            return ServerResponse.createByErrorMessage("token无效或过期");
+        }
+
+        // 如果直接是用s1.equals(s2)不安全，万一s1是null那么就报错空指针了，StringUtils则可以规避。
+        if(StringUtils.equals(token,getToken)){
+            // token匹配成功
+            String md5Password = MD5Util.MD5EncodeUtf8(newPassword);
+            int count  = userMapper.updatePasswordByUsername(username,md5Password);
+            if(count > 0){
+                return ServerResponse.createBySuccessMessage("修改密码成功");
+            }
+        }else{
+            return ServerResponse.createByErrorMessage("token错误，请重新获取");
+        }
+        return ServerResponse.createByErrorMessage("修改密码失败");
+    }
+
+    public ServerResponse<String> resetPassword(String oldPassword, String newPassword, User user){
+        // 防止横向越权，要校验一下这个用户的旧密码匹配这个用户
+        int count = userMapper.checkPassword(MD5Util.MD5EncodeUtf8(oldPassword),user.getId());
+        if(count == 0){
+            return ServerResponse.createByErrorMessage("旧密码错误");
+        }
+        user.setPassword(MD5Util.MD5EncodeUtf8(newPassword));
+        int updateCount = userMapper.updateByPrimaryKeySelective(user);  // 选择性更新而不是全部更新
+        if(updateCount > 0){
+            return ServerResponse.createBySuccessMessage("密码更新成功");
+        }else{
+            return ServerResponse.createByErrorMessage("密码更新失败");
+        }
+    }
+
+    public ServerResponse<User> updateUserInfo(User user){
+        // username不能被更新； email也要校验是否已被其他用户使用
+        int count = userMapper.checkOthersEmailByUserId(user.getEmail(),user.getId());
+        if(count > 0){
+            return ServerResponse.createByErrorMessage("email已被占用");
+        }
+
+        User updateUser = new User();
+        updateUser.setId(user.getId());
+        updateUser.setEmail(user.getEmail());
+        updateUser.setQuestion(user.getQuestion());
+        updateUser.setPhone(user.getPhone());
+        updateUser.setAnswer(user.getAnswer());
+
+        int updateCount = userMapper.updateByPrimaryKeySelective(updateUser);
+        if(updateCount > 0){
+            return ServerResponse.createBySuccess("更新个人信息成功",updateUser);
+        }
+        return ServerResponse.createByErrorMessage("更新个人信息失败");
+    }
+
+    public ServerResponse<User> getUserInfo(Integer userId){
+        User user = userMapper.selectByPrimaryKey(userId);
+        if(user == null){
+            return ServerResponse.createByErrorMessage("找不到用户");
+        }
+        user.setPassword(StringUtils.EMPTY);   // 安全起见，密码置空
+        return  ServerResponse.createBySuccess(user);
+    }
+
+    public static void main(String[] args) {
+        UserServiceImpl userService = new UserServiceImpl();
+        ServerResponse response = userService.login("admin","admin");
+        System.out.println(response.getMsg());
     }
 
 }

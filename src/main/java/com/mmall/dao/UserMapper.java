@@ -26,4 +26,11 @@ public interface UserMapper {
     String selectQuestionByUsername(String username);
 
     int checkAnswer(@Param("username") String username,  @Param("question") String question, @Param("answer") String answer);
+
+    int updatePasswordByUsername(@Param("username") String username, @Param("newPassword") String newpassword);
+
+    int checkPassword(@Param("password") String password, @Param("userId") Integer userId);
+
+    // 是否email被其他用户所使用
+    int checkOthersEmailByUserId(@Param("email") String email, @Param("userId") Integer userId);
 }

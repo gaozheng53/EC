@@ -12,6 +12,8 @@ public class TokenCache {
 
     private static Logger logger = LoggerFactory.getLogger(TokenCache.class);
 
+    public static final String TOKEN_PREFIX = "token_";
+
 //    Guava设置local chache 缓存容量，有效期   超过最大容量就用LRU(最少使用算法)进行清除
     private static LoadingCache<String,String> localCache = CacheBuilder.newBuilder().initialCapacity(1000).maximumSize(10000).expireAfterAccess(12, TimeUnit.HOURS)
         .build(new CacheLoader<String, String>() {
