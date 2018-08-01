@@ -156,10 +156,28 @@
     WHERE username = #{username}
   </select>
 
+  <select id="checkEmail" resultType="int" parameterType="string">
+    SELECT count(1) FROM mmall_user
+    WHERE email = #{email}
+  </select>
+
   <!--返回为User对象， BaseResultMap为本XML文件头定义的-->
   <select id="selectLogin" resultMap="BaseResultMap" parameterType="map">
     SELECT <include refid="Base_Column_List" />
     FROM mmall_user
     WHERE username = #{username} and password = #{password}
+  </select>
+
+  <select id="selectQuestionByUsername" resultType="string" parameterType="string">
+    SELECT quesion
+    from mmall_user
+    where username = #{username}
+  </select>
+
+  <!--多个参数要用map-->
+  <select id="checkAnswer" resultType="int" parameterType="map">
+    SELECT COUNT(1)
+    from mmall_user
+    where username = #{username} and question = #{question} and answer = #{answer}
   </select>
 </mapper>

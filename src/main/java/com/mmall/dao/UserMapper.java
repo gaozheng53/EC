@@ -18,6 +18,12 @@ public interface UserMapper {
 
     int checkUsername(String username);
 
-    // @Param("...") 定义别名，以...名对应mapper
+    int checkEmail(String email);
+
+    // @Param("...") 定义别名，以...名对应mapper   建议有多个参数的时候都要这样定义
     User selectLogin(@Param("username") String username, @Param("password") String password);
+
+    String selectQuestionByUsername(String username);
+
+    int checkAnswer(@Param("username") String username,  @Param("question") String question, @Param("answer") String answer);
 }
