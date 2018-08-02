@@ -20,8 +20,7 @@ public class UserServiceImpl implements IUserService{
 
     @Override
     public ServerResponse<User> login(String username, String password) {
-//        System.out.println("username = " + username + " password = "+ password);
-        int countUser = userMapper.checkUsername(username);  
+        int countUser = userMapper.checkUsername(username);   //  <--username参数传进去是null
         if( countUser == 0){return ServerResponse.createByErrorMessage("用户名不存在");}
 
         String md5Password = MD5Util.MD5EncodeUtf8(password);
@@ -29,8 +28,6 @@ public class UserServiceImpl implements IUserService{
         if(user == null){
             return ServerResponse.createByErrorMessage("密码错误");
         }
-
-
 
         user.setPassword(StringUtils.EMPTY);  //密码置空
         return ServerResponse.createBySuccess("登录成功",user);

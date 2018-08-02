@@ -83,7 +83,7 @@ public class UserController {
 
     @RequestMapping(value = "reset_password.do",method = RequestMethod.POST)
     @ResponseBody
-    // 登录状态下的忘记密码
+    // 登录状态下的忘记密码   传参的时候session不用作为form-data的key传入
     public ServerResponse<String> resetPassword(HttpSession session, String oldPassword, String newPassword){
         User user = (User)session.getAttribute(Const.CURRENT_USER);
         if(user == null){
