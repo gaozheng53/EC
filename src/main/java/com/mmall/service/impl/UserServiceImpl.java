@@ -170,10 +170,19 @@ public class UserServiceImpl implements IUserService{
         return  ServerResponse.createBySuccess(user);
     }
 
-    public static void main(String[] args) {
-        UserServiceImpl userService = new UserServiceImpl();
-        ServerResponse response = userService.login("admin","admin");
-        System.out.println(response.getMsg());
+
+    /**
+     * Back-end
+     */
+
+    // 校验是否是管理员
+    public ServerResponse checkAdmin(User user){
+        if(user != null && user.getRole().intValue() == Const.role.ROLE_ADMIN){
+            return ServerResponse.createBySuccess();
+        }
+        return ServerResponse.createByError();
     }
+
+
 
 }

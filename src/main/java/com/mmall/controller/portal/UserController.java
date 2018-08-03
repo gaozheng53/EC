@@ -1,4 +1,4 @@
-package com.mmall.controller.entry.portal;
+package com.mmall.controller.portal;
 
 import com.mmall.common.Const;
 import com.mmall.common.ResponseCode;
