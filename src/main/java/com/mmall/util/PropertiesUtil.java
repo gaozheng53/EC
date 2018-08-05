@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
-
+// 自定义的工具类  用工具类就可以避免多次加载的问题
 public class PropertiesUtil {
 
     private static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
@@ -16,6 +16,7 @@ public class PropertiesUtil {
     private static Properties props;
 
     static {
+        // 静态块   先执行静态块（在类被加载的时候执行，切只执行一次），再普通代码块，再构造代码块
         String fileName = "mmall.properties";
         props = new Properties();
         try {
@@ -26,7 +27,7 @@ public class PropertiesUtil {
     }
 
     public static String getProperty(String key){
-        String value = props.getProperty(key.trim());
+        String value = props.getProperty(key.trim());  // 避免两边的空格
         if(StringUtils.isBlank(value)){
             return null;
         }

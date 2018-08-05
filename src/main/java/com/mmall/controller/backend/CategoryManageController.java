@@ -23,7 +23,7 @@ public class CategoryManageController {
     private IUserService iUserService;
 
     @Autowired
-    private ICategoryService iCategoryService;  //  报错： Injection of autowired dependencies failed;
+    private ICategoryService iCategoryService;
 
 
     @RequestMapping(value = "add_category.do")
