@@ -184,17 +184,31 @@
   </select>
 
   <select id="selectByNameAndProductId" resultMap="BaseResultMap" parameterType="map">
-    SELECT <include refid="Base_Column_List"/>
-    FROM mmall_product
+    SELECT
+    <include refid="Base_Column_List"/>
+    from mmall_product
     <where>
---       where标签处理掉那种首部无用的and/or的情况
       <if test="productName != null">
-          and name LIKE #{productName}
+        and name like #{productName}
       </if>
       <if test="productId != null">
-          and id = #{productId}
+        and id = #{productId}
       </if>
     </where>
-    WHERE name = #{productName}
+  </select>
+
+  <select id="selectByNameAndCategoryIds" resultMap="BaseResultMap" parameterType="map">
+  SELECT <include refid="Base_Column_List"/>
+  FROM mmall_product
+  WHERE status = 1
+    <if test="productName != null">
+      and name LIKE #{productName}
+    </if>
+    <if test="categoryIdList != null">
+      and category_id in 
+        <foreach item="item" index="index" open="(" separator="," close=")" collection="categoryIdList">
+          #{item}
+        </foreach>
+    </if>
   </select>
 </mapper>

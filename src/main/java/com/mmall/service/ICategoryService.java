@@ -13,5 +13,5 @@ public interface ICategoryService {
 
     ServerResponse<List<Category>> getChildrenParallelCategory(Integer categoryId);
 
-    ServerResponse selectRecursiveCategoryById(Integer categoryId);
+    ServerResponse<List<Integer>> selectRecursiveCategoryById(Integer categoryId);
     }

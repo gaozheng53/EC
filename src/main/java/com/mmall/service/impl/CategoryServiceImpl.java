@@ -65,7 +65,7 @@ public class CategoryServiceImpl implements ICategoryService{
 
 
 //  递归查询本节点及孩子节点的id
-    public ServerResponse selectRecursiveCategoryById(Integer categoryId){
+    public ServerResponse<List<Integer>> selectRecursiveCategoryById(Integer categoryId){
         Set<Category> categorySet = Sets.newHashSet();  //Guava的这个写法 比new HashSet好在哪？
         findChildrenCategory(categorySet,categoryId);
         List<Integer> categoryIdList = Lists.newArrayList();
