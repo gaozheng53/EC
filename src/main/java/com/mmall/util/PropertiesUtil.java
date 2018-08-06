@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Properties;
 
-// 自定义的工具类  用工具类就可以避免多次加载的问题
+// 自定义的工具类  用于获取.properties文件中某个属性的值  用工具类就可以避免多次加载的问题
 public class PropertiesUtil {
 
     private static Logger logger = LoggerFactory.getLogger(PropertiesUtil.class);
