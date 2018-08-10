@@ -275,6 +275,7 @@
           <target>1.7</target>
           <encoding>UTF-8</encoding>
           <compilerArguments>
+            <!--定位到alipay的sdk,用于将来一起编译打包到服务器上-->
             <extdirs>${project.basedir}/src/main/webapp/WEB-INF/lib</extdirs>
           </compilerArguments>
         </configuration>
