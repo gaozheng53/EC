@@ -46,28 +46,28 @@ public class FTPUtil {
      * @param fileList
      * @return
      */
-    private boolean uploadFile(String remotePath, List<File> fileList) throws IOException {
-        boolean uploaded = true;   // 是否传了
+    private boolean uploadFile(String remotePath,List<File> fileList) throws IOException {
+        boolean uploaded = true;
         FileInputStream fis = null;
-        // 连接FTP服务器
+        //连接FTP服务器
         if(connectServer(this.ip,this.port,this.user,this.pwd)){
             try {
-                System.out.println("进来了！！");
+                logger.info("成功接入ftp服务器，需要上传文件数为：{}", fileList.size());
                 ftpClient.changeWorkingDirectory(remotePath);
                 ftpClient.setBufferSize(1024);
                 ftpClient.setControlEncoding("UTF-8");
-                ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE); // 可以防止乱码问题
-                ftpClient.enterLocalPassiveMode();  // 打开被动模式
-                for(File file : fileList){
-                    fis = new FileInputStream(file);
-                    ftpClient.storeFile(file.getName(),fis);
+                ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+                ftpClient.enterLocalPassiveMode();
+                for(File fileItem : fileList){
+                    fis = new FileInputStream(fileItem);
+                    ftpClient.storeFile(fileItem.getName(),fis);
                 }
+
             } catch (IOException e) {
                 logger.error("上传文件异常",e);
                 uploaded = false;
                 e.printStackTrace();
-            }finally {
-                // 释放连接
+            } finally {
                 fis.close();
                 ftpClient.disconnect();
             }

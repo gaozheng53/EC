@@ -25,7 +25,6 @@ import com.mmall.util.BigDecimalUtil;
 import com.mmall.util.DateTimeUtil;
 import com.mmall.util.FTPUtil;
 import com.mmall.util.PropertiesUtil;
-import net.sf.jsqlparser.schema.Server;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -154,12 +153,13 @@ public class OrderServiceImpl implements IOrderService {
                 // 需要修改为运行机器上的路径
                 String qrPath = String.format(path + "/qr-%s.png",
                         response.getOutTradeNo());
+                logger.info("生成qr的地址为：{}",qrPath);
                 String qrFileName = String.format("qr-%s.png", response.getOutTradeNo());
                 ZxingUtils.getQRCodeImge(response.getQrCode(), 256, qrPath);
 
                 File targetFile = new File(path, qrFileName);
                 try {
-                    FTPUtil.uploadFile(Lists.<File>newArrayList());
+                    FTPUtil.uploadFile(Lists.<File>newArrayList(targetFile));
                 } catch (IOException e) {
                     logger.error("上传二维码异常", e);
                 }
